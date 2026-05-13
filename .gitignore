@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Upload folder
+uploads/
+
+# Hardhat cache
+cache/
+artifacts/
+
+# Logs
+*.log
