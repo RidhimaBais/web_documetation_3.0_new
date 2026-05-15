@@ -15,26 +15,73 @@ export default function Dashboard() {
     issuers: [],
   });
 
-  // =========================================================
-  // FETCH DASHBOARD DATA
-  // =======================================================
-
-  // =========================================================
-  // LOAD DASHBOARD ON COMPONENT MOUNT
-  // =========================================================
-
   useEffect(() => {
-  const loadDashboard = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/dashboard");
-      setDashboard(response.data);
-    } catch (error) {
-      console.error("Dashboard fetch failed:", error);
-    }
-  };
 
-  loadDashboard();
-}, []);
+    // =========================================
+    // FETCH DASHBOARD DATA
+    // =========================================
+
+    const loadDashboard = async () => {
+
+      try {
+
+        // Call backend dashboard API
+        const response = await axios.get(
+          "http://localhost:5000/dashboard"
+        );
+
+        // =========================================
+        // SAFE STATE UPDATE
+        // =========================================
+
+        // Prevents undefined.length errors
+        setDashboard({
+
+          registeredDocuments:
+            response.data.registeredDocuments || [],
+
+          transactions:
+            response.data.transactions || [],
+
+          verificationLogs:
+            response.data.verificationLogs || [],
+
+          issuers:
+            response.data.issuers || [],
+        });
+
+      } catch (error) {
+
+        console.error(
+          "Dashboard fetch failed:",
+          error
+        );
+      }
+    };
+
+    // =========================================
+    // FIRST LOAD
+    // =========================================
+
+    loadDashboard();
+
+    // =========================================
+    // AUTO REFRESH EVERY 1 SECOND
+    // =========================================
+
+    const interval = setInterval(() => {
+
+      loadDashboard();
+
+    }, 1000);
+
+    // =========================================
+    // CLEANUP
+    // =========================================
+
+    return () => clearInterval(interval);
+
+  }, []);
   // =========================================================
   // CARD STYLING
   // =========================================================
